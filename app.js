@@ -1,6 +1,8 @@
 // This file contains the main JavaScript logic for the pathfinding visualizer. 
 // It handles user interactions, grid rendering, and integrates the selected pathfinding algorithms.
 
+import createMaze from './mazegenerators/recursive.js';
+
 const grid = document.getElementById('grid');
 const algorithmSelect = document.getElementById('algorithm');
 const clearButton = document.getElementById('clear');
@@ -486,3 +488,34 @@ darkModeToggle.addEventListener('click', () => {
 });
 
 createGrid(20, 20); // Example grid size on initialization
+
+function generateMaze() {
+    const mazeType = document.getElementById('maze').value;
+    
+    if (mazeType === 'recursive') {
+        clearGrid();
+        const rows = gridData.length;
+        const cols = gridData[0].length;
+        
+        const maze = new RecursiveMaze(cols, rows);
+        const walls = maze.generate();
+        
+        // Add walls to gridData
+        walls.forEach(({row, col}) => {
+            if (row < rows && col < cols) {
+                gridData[row][col] = 'wall';
+            }
+        });
+        
+        renderGrid();
+    } else if (mazeType === 'random') {
+        // Implement random maze generation
+        // ...existing random maze code if any...
+    } else if (mazeType === 'staircase') {
+        // Implement staircase maze generation
+        // ...existing staircase code if any...
+    }
+}
+
+// Update maze generation button event listener
+document.querySelector('#generateMaze').addEventListener('click', generateMaze);

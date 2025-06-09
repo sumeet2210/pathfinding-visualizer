@@ -1,20 +1,21 @@
 body {
-    background: linear-gradient(120deg, #dcedc8 0%, #c5e1a5 100%);
-    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(120deg, #E3F2FD 0%, #BBDEFB 100%);
+    font-family: 'Baloo Bhai 2', system-ui, -apple-system, sans-serif;
     margin: 0;
     padding: 0;
 }
 
 header {
-    background: #689f38;
+    background: #1976D2;
     color: #fff;
     padding: 20px 0 10px 0;
-    box-shadow: 0 2px 8px rgba(104, 159, 56, 0.08);
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+    text-align: center;
 }
 
 h1 {
     margin: 0 0 10px 0;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 2px;
 }
 
@@ -23,15 +24,18 @@ h1 {
     gap: 10px;
     align-items: center;
     justify-content: center;
+    margin-top: 5px;
     margin-bottom: 10px;
 }
 
 .controls label {
     font-weight: 500;
+    font-family: 'Baloo Bhai 2', sans-serif;
 }
 
 .controls select,
 .controls button {
+    font-family: 'Baloo Bhai 2', sans-serif;
     padding: 7px 16px;
     border-radius: 5px;
     border: none;
@@ -40,9 +44,9 @@ h1 {
 }
 
 .controls select {
-    background: #dcedc8;
-    color: #689f38;
-    border: 1px solid #a5d6a7;
+    background: #E3F2FD;
+    color: #1976D2;
+    border: 1px solid #90CAF9;
 }
 
 .controls select#maze {
@@ -50,7 +54,7 @@ h1 {
 }
 
 .controls button {
-    background: #689f38;
+    background: #1976D2;
     color: #fff;
     cursor: pointer;
     transition: background 0.2s;
@@ -58,18 +62,18 @@ h1 {
 }
 
 .controls button:hover {
-    background: #558b2f;
+    background: #1565C0;
 }
 
 .node-selection {
     display: flex;
     gap: 10px;
     justify-content: center;
-    margin: 18px 0 0 0;
+    margin: 0 0 15px 0;  /* Adjusted margin */
 }
 
 .node-selection button {
-    background: #558b2f;
+    background: #1565C0;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -81,7 +85,7 @@ h1 {
 }
 
 .node-selection button:hover {
-    background: #33691e;
+    background: #0D47A1;
 }
 
 #grid {
@@ -96,20 +100,20 @@ h1 {
 .node {
     border-radius: 4px;
     transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 1px 2px rgba(104, 159, 56, 0.04);
-    border: none;
+    box-shadow: 0 1px 2px rgba(25, 118, 210, 0.04);
+    border: 1px solid #ccc;
 }
 
 .node.start {
-    background: #4caf50 !important;
-    box-shadow: 0 0 8px #4caf5088;
-    border: 2px solid #388e3c;
+    background: #2196F3 !important;
+    box-shadow: 0 0 8px rgba(33, 150, 243, 0.5);
+    border: 2px solid #1976D2;
 }
 
 .node.end {
-    background: #ff9800 !important;
-    box-shadow: 0 0 8px #ff980088;
-    border: 2px solid #f57c00;
+    background: #0D47A1 !important;
+    box-shadow: 0 0 8px rgba(13, 71, 161, 0.5);
+    border: 2px solid #0D47A1;
 }
 
 .node.wall {
@@ -121,24 +125,24 @@ h1 {
 
 .node.visited {
     animation: visited-fade 0.3s forwards;
-    background: #a5d6a7 !important;
-    box-shadow: 0 0 8px #a5d6a788;
+    background: #90CAF9 !important;
+    box-shadow: 0 0 8px rgba(144, 202, 249, 0.5);
+    background-color: rgba(0, 190, 218, 0.75);
 }
 
 @keyframes visited-fade {
     from { background: #fff; }
-    to { background: #a5d6a7; }
+    to { background: #90CAF9; }
 }
 
 .node.shortest-path {
-    animation: path-fade 0.3s forwards;
-    background: #ffd600 !important;
-    box-shadow: 0 0 10px #ffd60088;
+    background: #2196F3 !important;
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
 }
 
 @keyframes path-fade {
-    from { background: #a5d6a7; }
-    to { background: #ffd600; }
+    from { background: #90CAF9; }
+    to { background: #2196F3; }
 }
 
 #message {
@@ -147,20 +151,20 @@ h1 {
     font-size: 1.1rem;
     padding: 8px 0;
     border-radius: 6px;
-    background: #dcedc8;
-    color: #689f38;
-    border: 1px solid #a5d6a7;
+    background: #E3F2FD;
+    color: #1976D2;
+    border: 1px solid #90CAF9;
     box-shadow: 0 2px 8px rgba(104, 159, 56, 0.06);
 }
 
 /* Dark Mode Styles */
 body.dark-mode {
-    background: linear-gradient(120deg, #455a64 0%, #37474f 100%);
+    background: linear-gradient(120deg, #0D47A1 0%, #1565C0 100%);
     color: #fff;
 }
 
 body.dark-mode header {
-    background: #263238;
+    background: #0D47A1;
     color: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
@@ -196,22 +200,21 @@ body.dark-mode #grid {
 
 body.dark-mode .node {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border-color: #444;
 }
 
 body.dark-mode .node.wall {
-    background: #90a4ae !important;
-    border: 2px solid #90a4ae;
+    background-color: #1a1a1a;
+    border-color: #000;
 }
 
 body.dark-mode .node.visited {
-    background: #607d8b !important;
-    box-shadow: 0 0 8px #607d8b88;
+    background-color: rgba(33, 150, 243, 0.5);
 }
 
 body.dark-mode .node.shortest-path {
-    animation: path-fade 0.3s forwards;
-    background: #ffca28 !important;
-    box-shadow: 0 0 10px #ffca2888;
+    background: #64B5F6 !important;
+    box-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
 }
 
 body.dark-mode #message {
@@ -282,4 +285,98 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* Maze specific styles */
+.node {
+    transition: background-color 0.3s ease;
+    border: 1px solid #ccc;
+}
+
+.node.wall {
+    background-color: #34495e;
+    border: 1px solid #2c3e50;
+    animation: wallAnimation 0.3s ease-in-out;
+}
+
+.node.visited {
+    background-color: rgba(0, 190, 218, 0.75);
+    animation: visitedAnimation 0.3s ease-out;
+}
+
+.node.shortest-path {
+    background-color: #ffd700;
+    animation: shortestPathAnimation 0.3s ease-out;
+}
+
+.node.start {
+    background-color: #4caf50 !important;
+}
+
+.node.end {
+    background-color: #f44336 !important;
+}
+
+/* Animations */
+@keyframes wallAnimation {
+    0% {
+        transform: scale(0.3);
+        background-color: #95a5a6;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        background-color: #34495e;
+    }
+}
+
+@keyframes visitedAnimation {
+    0% {
+        transform: scale(0.3);
+        background-color: rgba(0, 217, 159, 0.75);
+    }
+    50% {
+        transform: scale(1.2);
+        background-color: rgba(0, 190, 218, 0.75);
+    }
+    100% {
+        transform: scale(1);
+        background-color: rgba(0, 190, 218, 0.75);
+    }
+}
+
+@keyframes shortestPathAnimation {
+    0% {
+        transform: scale(0.6);
+        background-color: #fff;
+    }
+    50% {
+        transform: scale(1.2);
+        background-color: #2196F3;
+    }
+    100% {
+        transform: scale(1);
+        background-color: #2196F3;
+    }
+}
+
+/* Dark mode adjustments */
+.dark-mode .node {
+    border-color: #444;
+}
+
+.dark-mode .node.wall {
+    background-color: #1a1a1a;
+    border-color: #000;
+}
+
+.dark-mode .node.visited {
+    background-color: rgba(33, 150, 243, 0.5);
+}
+
+.dark-mode .node.shortest-path {
+    background: #64B5F6 !important;
+    box-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
 }
