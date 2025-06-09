@@ -1,64 +1,78 @@
-class RecursiveMaze {
-    constructor(width, height) {
-        this.width = width % 2 === 0 ? width + 1 : width;
-        this.height = height % 2 === 0 ? height + 1 : height;
-        this.walls = [];  // Store wall coordinates instead of grid
+function recursiveDivisionMaze(rows, cols) {
+    // Ensure odd dimensions for better maze structure
+    if (rows % 2 === 0) rows--;
+    if (cols % 2 === 0) cols--;
+
+    // Initialize grid with 0 (empty)
+    const grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+    const walls = [];
+
+    // Add outer walls
+    for (let r = 0; r < rows; r++) {
+        grid[r][0] = 1;
+        grid[r][cols - 1] = 1;
+        walls.push({ row: r, col: 0 });
+        walls.push({ row: r, col: cols - 1 });
+    }
+    for (let c = 0; c < cols; c++) {
+        grid[0][c] = 1;
+        grid[rows - 1][c] = 1;
+        walls.push({ row: 0, col: c });
+        walls.push({ row: rows - 1, col: c });
     }
 
-    generate() {
-        // Initialize walls array
-        this.walls = [];
-        
-        // Add border walls
-        for (let i = 0; i < this.height; i++) {
-            this.addWall(i, 0);
-            this.addWall(i, this.width - 1);
-        }
-        for (let j = 0; j < this.width; j++) {
-            this.addWall(0, j);
-            this.addWall(this.height - 1, j);
-        }
-
-        // Start recursive division
-        this.divide(1, this.height - 2, 1, this.width - 2, this.chooseOrientation(this.height - 2, this.width - 2));
-        return this.walls;
-    }
-
-    addWall(row, col) {
-        this.walls.push({row, col});
-    }
-
-    divide(startY, endY, startX, endX, orientation) {
-        if (endX - startX < 2 || endY - startY < 2) return;
+    function divide(rStart, rEnd, cStart, cEnd, orientation) {
+        if (rEnd - rStart < 2 || cEnd - cStart < 2) return;
 
         if (orientation === 'horizontal') {
-            const y = Math.floor(startY + (Math.random() * (endY - startY)) / 2) * 2 + 1;
-            const hole = Math.floor(startX + (Math.random() * (endX - startX + 1)) / 2) * 2;
-            
-            for (let x = startX; x <= endX; x++) {
-                if (x !== hole) this.addWall(y, x);
-            }
+            // Choose a random even row for the wall
+            let possibleRows = [];
+            for (let r = rStart + 1; r < rEnd; r += 2) possibleRows.push(r);
+            const wallRow = possibleRows[Math.floor(Math.random() * possibleRows.length)];
 
-            this.divide(startY, y - 1, startX, endX, this.chooseOrientation(y - 1 - startY, endX - startX));
-            this.divide(y + 1, endY, startX, endX, this.chooseOrientation(endY - (y + 1), endX - startX));
+            // Choose a random odd col for the passage
+            let possibleCols = [];
+            for (let c = cStart; c <= cEnd; c += 2) possibleCols.push(c);
+            const passageCol = possibleCols[Math.floor(Math.random() * possibleCols.length)];
+
+            for (let c = cStart; c <= cEnd; c++) {
+                if (c !== passageCol) {
+                    grid[wallRow][c] = 1;
+                    walls.push({ row: wallRow, col: c });
+                }
+            }
+            divide(rStart, wallRow - 1, cStart, cEnd, chooseOrientation(wallRow - 1 - rStart, cEnd - cStart));
+            divide(wallRow + 1, rEnd, cStart, cEnd, chooseOrientation(rEnd - (wallRow + 1), cEnd - cStart));
         } else {
-            const x = Math.floor(startX + (Math.random() * (endX - startX)) / 2) * 2 + 1;
-            const hole = Math.floor(startY + (Math.random() * (endY - startY + 1)) / 2) * 2;
-            
-            for (let y = startY; y <= endY; y++) {
-                if (y !== hole) this.addWall(y, x);
-            }
+            // Choose a random even col for the wall
+            let possibleCols = [];
+            for (let c = cStart + 1; c < cEnd; c += 2) possibleCols.push(c);
+            const wallCol = possibleCols[Math.floor(Math.random() * possibleCols.length)];
 
-            this.divide(startY, endY, startX, x - 1, this.chooseOrientation(endY - startY, x - 1 - startX));
-            this.divide(startY, endY, x + 1, endX, this.chooseOrientation(endY - startY, endX - (x + 1)));
+            // Choose a random odd row for the passage
+            let possibleRows = [];
+            for (let r = rStart; r <= rEnd; r += 2) possibleRows.push(r);
+            const passageRow = possibleRows[Math.floor(Math.random() * possibleRows.length)];
+
+            for (let r = rStart; r <= rEnd; r++) {
+                if (r !== passageRow) {
+                    grid[r][wallCol] = 1;
+                    walls.push({ row: r, col: wallCol });
+                }
+            }
+            divide(rStart, rEnd, cStart, wallCol - 1, chooseOrientation(rEnd - rStart, wallCol - 1 - cStart));
+            divide(rStart, rEnd, wallCol + 1, cEnd, chooseOrientation(rEnd - rStart, cEnd - (wallCol + 1)));
         }
     }
 
-    chooseOrientation(height, width) {
+    function chooseOrientation(height, width) {
         if (width < height) return 'horizontal';
         else if (height < width) return 'vertical';
         else return Math.random() < 0.5 ? 'horizontal' : 'vertical';
     }
+
+    divide(0, rows - 1, 0, cols - 1, chooseOrientation(rows - 1, cols - 1));
+    return walls;
 }
 
-export default RecursiveMaze;
+export default recursiveDivisionMaze;

@@ -21,6 +21,7 @@
                 <option value="bfs">Breadth-First Search (BFS)</option>
                 <option value="dfs">Depth-First Search (DFS)</option>
                 <option value="astar">A* (A-star)</option>
+                <option value="bidijkstra">Bidirectional Dijkstra</option>
             </select>
             <label for="speed">Speed:</label>
             <select id="speed">
@@ -49,10 +50,11 @@
     <main>
         <div id="grid"></div>
     </main>
+    <div class="overlay" id="overlay"></div>
     <div id="noPathPopup" class="popup">
         <div class="popup-content">
-            <p>No path found! 😕</p>
-            <button class="popup-close" onclick="document.getElementById('noPathPopup').classList.remove('show')">OK</button>
+            <p>❌ No path found between start and end nodes!</p>
+            <button class="popup-close" onclick="closePopup()">Got it!</button>
         </div>
     </div>
     <script type="module" src="app.js"></script>

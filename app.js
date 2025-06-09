@@ -2,6 +2,8 @@
 // It handles user interactions, grid rendering, and integrates the selected pathfinding algorithms.
 
 import createMaze from './mazegenerators/recursive.js';
+import recursiveDivisionMaze from './mazegenerators/recursive.js';
+import { bidirectionalDijkstra } from './algorithms/bidirectional.js';
 
 const grid = document.getElementById('grid');
 const algorithmSelect = document.getElementById('algorithm');
@@ -17,6 +19,8 @@ let startNode = null;
 let endNode = null;
 let isMouseDown = false;
 let selectMode = null; // 'start' | 'end' | null
+let isRunning = false;
+let animationTimeouts = [];
 
 function createGrid() {
     // Calculate grid dimensions based on available screen space
@@ -137,10 +141,18 @@ function renderGrid() {
 }
 
 function clearGrid() {
+    // Stop any running animation
+    if (isRunning) {
+        animationTimeouts.forEach(timeout => clearTimeout(timeout));
+        animationTimeouts = [];
+        isRunning = false;
+    }
+    
+    // Clear the grid
     gridData = [];
     startNode = null;
     endNode = null;
-    createGrid(20, 20); // Example grid size
+    createGrid();
 }
 
 // Add a message element for user feedback
@@ -194,6 +206,10 @@ function visualizePathfinding() {
         case 'astar':
             const {visitedNodes: astarVisited, shortestPath: astarPath} = astar(gridData, startNode, endNode);
             animatePathfinding(astarVisited, astarPath);
+            break;
+        case 'bidijkstra':
+            const {visitedNodes: biVisited, shortestPath: biPath} = bidirectionalDijkstra(gridData, startNode, endNode);
+            animatePathfinding(biVisited, biPath);
             break;
         default:
             break;
@@ -253,9 +269,9 @@ function dijkstra(grid, start, end) {
 }
 
 function animatePathfinding(visitedNodes, shortestPath) {
-    let animationSpeed = parseInt(speedSelect.value);
+    isRunning = true;
     for (let i = 0; i < visitedNodes.length; i++) {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             const {row, col} = visitedNodes[i];
             const node = document.querySelector(`.node[data-row="${row}"][data-col="${col}"]`);
             if (
@@ -267,18 +283,19 @@ function animatePathfinding(visitedNodes, shortestPath) {
             if (i === visitedNodes.length - 1) {
                 if (shortestPath.length === 0) {
                     showNoPathPopup();
+                    isRunning = false;
                 } else {
                     animateShortestPath(shortestPath);
                 }
             }
-        }, animationSpeed * i);
+        }, speedSelect.value * i);
+        animationTimeouts.push(timeout);
     }
 }
 
 function animateShortestPath(path) {
-    let animationSpeed = parseInt(speedSelect.value);
     for (let i = 0; i < path.length; i++) {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             const {row, col} = path[i];
             const node = document.querySelector(`.node[data-row="${row}"][data-col="${col}"]`);
             if (
@@ -287,7 +304,11 @@ function animateShortestPath(path) {
             ) {
                 node.classList.add('shortest-path');
             }
-        }, animationSpeed * i);
+            if (i === path.length - 1) {
+                isRunning = false;
+            }
+        }, speedSelect.value * i);
+        animationTimeouts.push(timeout);
     }
 }
 
@@ -493,25 +514,44 @@ darkModeToggle.addEventListener('click', () => {
 
 createGrid(20, 20); // Example grid size on initialization
 
+function animateMazeWalls(walls, callback) {
+    let i = 0;
+    isRunning = true;
+    function next() {
+        if (!isRunning) return;
+        if (i >= walls.length) {
+            isRunning = false;
+            if (callback) callback();
+            return;
+        }
+        const { row, col } = walls[i];
+        if (
+            gridData[row] &&
+            gridData[row][col] !== 'start' &&
+            gridData[row][col] !== 'end'
+        ) {
+            gridData[row][col] = 'wall';
+            renderGrid();
+        }
+        i++;
+        const timeout = setTimeout(next, 10); // Adjust speed here (ms)
+        animationTimeouts.push(timeout);
+    }
+    next();
+}
+
 function generateMaze() {
     const mazeType = document.getElementById('maze').value;
-    
+
     if (mazeType === 'recursive') {
         clearGrid();
         const rows = gridData.length;
         const cols = gridData[0].length;
-        
-        const maze = new RecursiveMaze(cols, rows);
-        const walls = maze.generate();
-        
-        // Add walls to gridData
-        walls.forEach(({row, col}) => {
-            if (row < rows && col < cols) {
-                gridData[row][col] = 'wall';
-            }
-        });
-        
-        renderGrid();
+
+        const walls = recursiveDivisionMaze(rows, cols);
+
+        // Animate wall creation
+        animateMazeWalls(walls);
     } else if (mazeType === 'random') {
         // Implement random maze generation
         // ...existing random maze code if any...
@@ -521,14 +561,19 @@ function generateMaze() {
     }
 }
 
-// Update maze generation button event listener
-document.querySelector('#generateMaze').addEventListener('click', generateMaze);
-
 // Popup handling
 function showNoPathPopup() {
-    const popup = document.getElementById('noPathPopup');
-    popup.classList.add('show');
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('noPathPopup').classList.add('show');
 }
+
+function closePopup() {
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('noPathPopup').classList.remove('show');
+}
+
+// Add this to window object to make it accessible from HTML
+window.closePopup = closePopup;
 
 // Close popup when clicking outside of it
 window.addEventListener('click', (event) => {
