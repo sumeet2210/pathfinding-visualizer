@@ -1,4 +1,4 @@
-export function astar(grid, start, end) {
+export function dijkstra(grid, start, end) {
     const rows = grid.length;
     const cols = grid[0].length;
     const visited = Array.from({length: rows}, () => Array(cols).fill(false));
@@ -7,24 +7,16 @@ export function astar(grid, start, end) {
     const visitedNodes = [];
     const pq = [];
 
-    function heuristic(a, b) {
-        return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
-    }
-
     distance[start.row][start.col] = 0;
-    pq.push({
-        row: start.row,
-        col: start.col,
-        f: heuristic(start, end)
-    });
+    pq.push({row: start.row, col: start.col, dist: 0});
 
     const directions = [
         [0, 1], [1, 0], [0, -1], [-1, 0]
     ];
 
     while (pq.length > 0) {
-        pq.sort((a, b) => a.f - b.f);
-        const {row, col} = pq.shift();
+        pq.sort((a, b) => a.dist - b.dist);
+        const {row, col, dist} = pq.shift();
         if (visited[row][col]) continue;
         visited[row][col] = true;
         visitedNodes.push({row, col});
@@ -37,15 +29,10 @@ export function astar(grid, start, end) {
                 nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
                 !visited[nr][nc] && grid[nr][nc] !== 'wall'
             ) {
-                const tentative_g = distance[row][col] + 1;
-                if (tentative_g < distance[nr][nc]) {
-                    distance[nr][nc] = tentative_g;
+                if (distance[row][col] + 1 < distance[nr][nc]) {
+                    distance[nr][nc] = distance[row][col] + 1;
                     prev[nr][nc] = {row, col};
-                    pq.push({
-                        row: nr,
-                        col: nc,
-                        f: tentative_g + heuristic({row: nr, col: nc}, end)
-                    });
+                    pq.push({row: nr, col: nc, dist: distance[nr][nc]});
                 }
             }
         }
