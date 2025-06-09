@@ -380,3 +380,45 @@ input:checked + .slider:before {
     background: #64B5F6 !important;
     box-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
 }
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    text-align: center;
+    border: 2px solid #1976D2;
+}
+
+.popup.show {
+    display: block;
+    animation: popupFade 0.3s ease-in-out;
+}
+
+.popup-content {
+    color: #1976D2;
+    font-family: 'Baloo Bhai 2', sans-serif;
+    font-size: 1.2rem;
+}
+
+.popup-close {
+    background: #1976D2;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-family: 'Baloo Bhai 2', sans-serif;
+}
+
+@keyframes popupFade {
+    from { opacity: 0; transform: translate(-50%, -60%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}

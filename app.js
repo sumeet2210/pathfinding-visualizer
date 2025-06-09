@@ -181,19 +181,19 @@ function visualizePathfinding() {
     switch (algorithm) {
         case 'dijkstra':
             const {visitedNodes, shortestPath} = dijkstra(gridData, startNode, endNode);
-            animateDijkstra(visitedNodes, shortestPath);
+            animatePathfinding(visitedNodes, shortestPath);
             break;
         case 'bfs':
             const {visitedNodes: bfsVisited, shortestPath: bfsPath} = bfs(gridData, startNode, endNode);
-            animateDijkstra(bfsVisited, bfsPath);
+            animatePathfinding(bfsVisited, bfsPath);
             break;
         case 'dfs':
             const {visitedNodes: dfsVisited, shortestPath: dfsPath} = dfs(gridData, startNode, endNode);
-            animateDijkstra(dfsVisited, dfsPath);
+            animatePathfinding(dfsVisited, dfsPath);
             break;
         case 'astar':
             const {visitedNodes: astarVisited, shortestPath: astarPath} = astar(gridData, startNode, endNode);
-            animateDijkstra(astarVisited, astarPath);
+            animatePathfinding(astarVisited, astarPath);
             break;
         default:
             break;
@@ -252,7 +252,7 @@ function dijkstra(grid, start, end) {
     return {visitedNodes, shortestPath: path};
 }
 
-function animateDijkstra(visitedNodes, shortestPath) {
+function animatePathfinding(visitedNodes, shortestPath) {
     let animationSpeed = parseInt(speedSelect.value);
     for (let i = 0; i < visitedNodes.length; i++) {
         setTimeout(() => {
@@ -265,7 +265,11 @@ function animateDijkstra(visitedNodes, shortestPath) {
                 node.classList.add('visited');
             }
             if (i === visitedNodes.length - 1) {
-                animateShortestPath(shortestPath);
+                if (shortestPath.length === 0) {
+                    showNoPathPopup();
+                } else {
+                    animateShortestPath(shortestPath);
+                }
             }
         }, animationSpeed * i);
     }
@@ -519,3 +523,17 @@ function generateMaze() {
 
 // Update maze generation button event listener
 document.querySelector('#generateMaze').addEventListener('click', generateMaze);
+
+// Popup handling
+function showNoPathPopup() {
+    const popup = document.getElementById('noPathPopup');
+    popup.classList.add('show');
+}
+
+// Close popup when clicking outside of it
+window.addEventListener('click', (event) => {
+    const popup = document.getElementById('noPathPopup');
+    if (event.target === popup) {
+        popup.classList.remove('show');
+    }
+});
