@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfinding Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Pathfinding Visualizer</h1>
+        <div class="controls">
+            <label for="algorithm">Select Algorithm:</label>
+            <select id="algorithm">
+                <option value="dijkstra">Dijkstra</option>
+                <option value="bfs">Breadth-First Search (BFS)</option>
+                <option value="dfs">Depth-First Search (DFS)</option>
+                <option value="astar">A* (A-star)</option>
+            </select>
+            <label for="speed">Speed:</label>
+            <select id="speed">
+                <option value="50">Slow</option>
+                <option value="25">Medium</option>
+                <option value="10">Fast</option>
+                <option value="5">Faster</option>
+                <option value="1">Fastest</option>
+            </select>
+            <label for="maze">Select Maze:</label>
+            <select id="maze">
+                <option value="random">Random Maze</option>
+                <option value="recursive">Recursive Division</option>
+                <option value="staircase">Staircase</option>
+            </select>
+            <button id="generateMaze">Generate Maze</button>
+            <button id="visualize">Visualize</button>
+            <button id="clear">Clear Grid</button>
+            <label for="darkModeToggle">Dark Mode:</label>
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </header>
+    <main>
+        <div id="grid"></div>
+        <div class="node-selection">
+            <button id="add-start-node">Add Start Node</button>
+            <button id="add-end-node">Add End Node</button>
+        </div>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
