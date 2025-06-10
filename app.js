@@ -4,6 +4,11 @@
 import createMaze from './mazegenerators/recursive.js';
 import recursiveDivisionMaze from './mazegenerators/recursive.js';
 import { bidirectionalDijkstra } from './algorithms/bidirectional.js';
+import { dfs } from './algorithms/dfs.js';
+import { dijkstra } from './algorithms/dijkstra.js';
+import { bfs } from './algorithms/bfs.js';
+import { astar } from './algorithms/astar.js';
+
 
 const grid = document.getElementById('grid');
 const algorithmSelect = document.getElementById('algorithm');
@@ -217,56 +222,56 @@ function visualizePathfinding() {
 }
 
 // Dijkstra's algorithm implementation
-function dijkstra(grid, start, end) {
-    const rows = grid.length;
-    const cols = grid[0].length;
-    const visited = Array.from({length: rows}, () => Array(cols).fill(false));
-    const distance = Array.from({length: rows}, () => Array(cols).fill(Infinity));
-    const prev = Array.from({length: rows}, () => Array(cols).fill(null));
-    const visitedNodes = [];
-    const pq = [];
+// function dijkstra(grid, start, end) {
+//     const rows = grid.length;
+//     const cols = grid[0].length;
+//     const visited = Array.from({length: rows}, () => Array(cols).fill(false));
+//     const distance = Array.from({length: rows}, () => Array(cols).fill(Infinity));
+//     const prev = Array.from({length: rows}, () => Array(cols).fill(null));
+//     const visitedNodes = [];
+//     const pq = [];
 
-    distance[start.row][start.col] = 0;
-    pq.push({row: start.row, col: start.col, dist: 0});
+//     distance[start.row][start.col] = 0;
+//     pq.push({row: start.row, col: start.col, dist: 0});
 
-    const directions = [
-        [0, 1], [1, 0], [0, -1], [-1, 0]
-    ];
+//     const directions = [
+//         [0, 1], [1, 0], [0, -1], [-1, 0]
+//     ];
 
-    while (pq.length > 0) {
-        // Get node with smallest distance
-        pq.sort((a, b) => a.dist - b.dist);
-        const {row, col, dist} = pq.shift();
-        if (visited[row][col]) continue;
-        visited[row][col] = true;
-        visitedNodes.push({row, col});
+//     while (pq.length > 0) {
+//         // Get node with smallest distance
+//         pq.sort((a, b) => a.dist - b.dist);
+//         const {row, col, dist} = pq.shift();
+//         if (visited[row][col]) continue;
+//         visited[row][col] = true;
+//         visitedNodes.push({row, col});
 
-        if (row === end.row && col === end.col) break;
+//         if (row === end.row && col === end.col) break;
 
-        for (const [dr, dc] of directions) {
-            const nr = row + dr, nc = col + dc;
-            if (
-                nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
-                !visited[nr][nc] && grid[nr][nc] !== 'wall'
-            ) {
-                if (distance[row][col] + 1 < distance[nr][nc]) {
-                    distance[nr][nc] = distance[row][col] + 1;
-                    prev[nr][nc] = {row, col};
-                    pq.push({row: nr, col: nc, dist: distance[nr][nc]});
-                }
-            }
-        }
-    }
+//         for (const [dr, dc] of directions) {
+//             const nr = row + dr, nc = col + dc;
+//             if (
+//                 nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
+//                 !visited[nr][nc] && grid[nr][nc] !== 'wall'
+//             ) {
+//                 if (distance[row][col] + 1 < distance[nr][nc]) {
+//                     distance[nr][nc] = distance[row][col] + 1;
+//                     prev[nr][nc] = {row, col};
+//                     pq.push({row: nr, col: nc, dist: distance[nr][nc]});
+//                 }
+//             }
+//         }
+//     }
 
-    // Reconstruct shortest path
-    let path = [];
-    let curr = (visited[end.row][end.col]) ? {row: end.row, col: end.col} : null;
-    while (curr) {
-        path.unshift(curr);
-        curr = prev[curr.row][curr.col];
-    }
-    return {visitedNodes, shortestPath: path};
-}
+//     // Reconstruct shortest path
+//     let path = [];
+//     let curr = (visited[end.row][end.col]) ? {row: end.row, col: end.col} : null;
+//     while (curr) {
+//         path.unshift(curr);
+//         curr = prev[curr.row][curr.col];
+//     }
+//     return {visitedNodes, shortestPath: path};
+// }
 
 function animatePathfinding(visitedNodes, shortestPath) {
     isRunning = true;
@@ -313,167 +318,117 @@ function animateShortestPath(path) {
 }
 
 // Breadth-First Search (BFS) implementation
-function bfs(grid, start, end) {
-    const rows = grid.length;
-    const cols = grid[0].length;
-    const visited = Array.from({length: rows}, () => Array(cols).fill(false));
-    const prev = Array.from({length: rows}, () => Array(cols).fill(null));
-    const visitedNodes = [];
-    const queue = [];
+// function bfs(grid, start, end) {
+//     const rows = grid.length;
+//     const cols = grid[0].length;
+//     const visited = Array.from({length: rows}, () => Array(cols).fill(false));
+//     const prev = Array.from({length: rows}, () => Array(cols).fill(null));
+//     const visitedNodes = [];
+//     const queue = [];
 
-    queue.push({row: start.row, col: start.col});
-    visited[start.row][start.col] = true;
+//     queue.push({row: start.row, col: start.col});
+//     visited[start.row][start.col] = true;
 
-    const directions = [
-        [0, 1], [1, 0], [0, -1], [-1, 0]
-    ];
+//     const directions = [
+//         [0, 1], [1, 0], [0, -1], [-1, 0]
+//     ];
 
-    while (queue.length > 0) {
-        const {row, col} = queue.shift();
-        visitedNodes.push({row, col});
+//     while (queue.length > 0) {
+//         const {row, col} = queue.shift();
+//         visitedNodes.push({row, col});
 
-        if (row === end.row && col === end.col) break;
+//         if (row === end.row && col === end.col) break;
 
-        for (const [dr, dc] of directions) {
-            const nr = row + dr, nc = col + dc;
-            if (
-                nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
-                !visited[nr][nc] && grid[nr][nc] !== 'wall'
-            ) {
-                visited[nr][nc] = true;
-                prev[nr][nc] = {row, col};
-                queue.push({row: nr, col: nc});
-            }
-        }
-    }
+//         for (const [dr, dc] of directions) {
+//             const nr = row + dr, nc = col + dc;
+//             if (
+//                 nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
+//                 !visited[nr][nc] && grid[nr][nc] !== 'wall'
+//             ) {
+//                 visited[nr][nc] = true;
+//                 prev[nr][nc] = {row, col};
+//                 queue.push({row: nr, col: nc});
+//             }
+//         }
+//     }
 
-    // Reconstruct shortest path
-    let path = [];
-    let curr = (visited[end.row][end.col]) ? {row: end.row, col: end.col} : null;
-    while (curr) {
-        path.unshift(curr);
-        curr = prev[curr.row][curr.col];
-    }
-    return {visitedNodes, shortestPath: path};
-}
+//     // Reconstruct shortest path
+//     let path = [];
+//     let curr = (visited[end.row][end.col]) ? {row: end.row, col: end.col} : null;
+//     while (curr) {
+//         path.unshift(curr);
+//         curr = prev[curr.row][curr.col];
+//     }
+//     return {visitedNodes, shortestPath: path};
+// }
 
-// Depth-First Search (DFS) implementation
-function dfs(grid, start, end) {
-    const rows = grid.length;
-    const cols = grid[0].length;
-    const visited = Array.from({length: rows}, () => Array(cols).fill(false));
-    const prev = Array.from({length: rows}, () => Array(cols).fill(null));
-    const visitedNodes = [];
-    let found = false;
 
-    function dfsVisit(row, col) {
-        if (
-            row < 0 || row >= rows ||
-            col < 0 || col >= cols ||
-            visited[row][col] ||
-            grid[row][col] === 'wall' ||
-            found
-        ) {
-            return;
-        }
-        visited[row][col] = true;
-        visitedNodes.push({row, col});
-        if (row === end.row && col === end.col) {
-            found = true;
-            return;
-        }
-        const directions = [
-            [0, 1], [1, 0], [0, -1], [-1, 0]
-        ];
-        for (const [dr, dc] of directions) {
-            const nr = row + dr, nc = col + dc;
-            if (
-                nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
-                !visited[nr][nc] && grid[nr][nc] !== 'wall'
-            ) {
-                prev[nr][nc] = {row, col};
-                dfsVisit(nr, nc);
-            }
-        }
-    }
-
-    dfsVisit(start.row, start.col);
-
-    // Reconstruct path
-    let path = [];
-    let curr = (visited[end.row][end.col]) ? {row: end.row, col: end.col} : null;
-    while (curr) {
-        path.unshift(curr);
-        curr = prev[curr.row][curr.col];
-    }
-    return {visitedNodes, shortestPath: path};
-}
 
 // A* (A-star) algorithm implementation
-function astar(grid, start, end) {
-    const rows = grid.length;
-    const cols = grid[0].length;
-    const visited = Array.from({length: rows}, () => Array(cols).fill(false));
-    const distance = Array.from({length: rows}, () => Array(cols).fill(Infinity));
-    const prev = Array.from({length: rows}, () => Array(cols).fill(null));
-    const visitedNodes = [];
-    const pq = [];
+// function astar(grid, start, end) {
+//     const rows = grid.length;
+//     const cols = grid[0].length;
+//     const visited = Array.from({length: rows}, () => Array(cols).fill(false));
+//     const distance = Array.from({length: rows}, () => Array(cols).fill(Infinity));
+//     const prev = Array.from({length: rows}, () => Array(cols).fill(null));
+//     const visitedNodes = [];
+//     const pq = [];
 
-    function heuristic(a, b) {
-        // Manhattan distance
-        return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
-    }
+//     function heuristic(a, b) {
+//         // Manhattan distance
+//         return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
+//     }
 
-    distance[start.row][start.col] = 0;
-    pq.push({
-        row: start.row,
-        col: start.col,
-        f: heuristic(start, end)
-    });
+//     distance[start.row][start.col] = 0;
+//     pq.push({
+//         row: start.row,
+//         col: start.col,
+//         f: heuristic(start, end)
+//     });
 
-    const directions = [
-        [0, 1], [1, 0], [0, -1], [-1, 0]
-    ];
+//     const directions = [
+//         [0, 1], [1, 0], [0, -1], [-1, 0]
+//     ];
 
-    while (pq.length > 0) {
-        // Get node with smallest f value
-        pq.sort((a, b) => a.f - b.f);
-        const {row, col} = pq.shift();
-        if (visited[row][col]) continue;
-        visited[row][col] = true;
-        visitedNodes.push({row, col});
+//     while (pq.length > 0) {
+//         // Get node with smallest f value
+//         pq.sort((a, b) => a.f - b.f);
+//         const {row, col} = pq.shift();
+//         if (visited[row][col]) continue;
+//         visited[row][col] = true;
+//         visitedNodes.push({row, col});
 
-        if (row === end.row && col === end.col) break;
+//         if (row === end.row && col === end.col) break;
 
-        for (const [dr, dc] of directions) {
-            const nr = row + dr, nc = col + dc;
-            if (
-                nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
-                !visited[nr][nc] && grid[nr][nc] !== 'wall'
-            ) {
-                const tentative_g = distance[row][col] + 1;
-                if (tentative_g < distance[nr][nc]) {
-                    distance[nr][nc] = tentative_g;
-                    prev[nr][nc] = {row, col};
-                    pq.push({
-                        row: nr,
-                        col: nc,
-                        f: tentative_g + heuristic({row: nr, col: nc}, end)
-                    });
-                }
-            }
-        }
-    }
+//         for (const [dr, dc] of directions) {
+//             const nr = row + dr, nc = col + dc;
+//             if (
+//                 nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
+//                 !visited[nr][nc] && grid[nr][nc] !== 'wall'
+//             ) {
+//                 const tentative_g = distance[row][col] + 1;
+//                 if (tentative_g < distance[nr][nc]) {
+//                     distance[nr][nc] = tentative_g;
+//                     prev[nr][nc] = {row, col};
+//                     pq.push({
+//                         row: nr,
+//                         col: nc,
+//                         f: tentative_g + heuristic({row: nr, col: nc}, end)
+//                     });
+//                 }
+//             }
+//         }
+//     }
 
-    // Reconstruct shortest path
-    let path = [];
-    let curr = (visited[end.row][end.col]) ? {row: end.row, col: end.col} : null;
-    while (curr) {
-        path.unshift(curr);
-        curr = prev[curr.row][curr.col];
-    }
-    return {visitedNodes, shortestPath: path};
-}
+//     // Reconstruct shortest path
+//     let path = [];
+//     let curr = (visited[end.row][end.col]) ? {row: end.row, col: end.col} : null;
+//     while (curr) {
+//         path.unshift(curr);
+//         curr = prev[curr.row][curr.col];
+//     }
+//     return {visitedNodes, shortestPath: path};
+// }
 
 // Add event listeners for select mode on the new buttons
 addStartNodeButton.addEventListener('click', () => {
