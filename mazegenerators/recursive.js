@@ -1,22 +1,18 @@
+/**
+ * Recursive Division Maze Generator
+ * @param {number} rows - number of rows in the grid
+ * @param {number} cols - number of columns in the grid
+ * @returns {Array<{row: number, col: number}>} - array of wall positions
+ */
 function recursiveDivisionMaze(rows, cols) {
-    // Ensure odd dimensions for better maze structure
-    if (rows % 2 === 0) rows--;
-    if (cols % 2 === 0) cols--;
-
-    // Initialize grid with 0 (empty)
-    const grid = Array.from({ length: rows }, () => Array(cols).fill(0));
     const walls = [];
 
-    // Add outer walls
+    // Add border walls
     for (let r = 0; r < rows; r++) {
-        grid[r][0] = 1;
-        grid[r][cols - 1] = 1;
         walls.push({ row: r, col: 0 });
         walls.push({ row: r, col: cols - 1 });
     }
     for (let c = 0; c < cols; c++) {
-        grid[0][c] = 1;
-        grid[rows - 1][c] = 1;
         walls.push({ row: 0, col: c });
         walls.push({ row: rows - 1, col: c });
     }
@@ -28,6 +24,7 @@ function recursiveDivisionMaze(rows, cols) {
             // Choose a random even row for the wall
             let possibleRows = [];
             for (let r = rStart + 1; r < rEnd; r += 2) possibleRows.push(r);
+            if (possibleRows.length === 0) return;
             const wallRow = possibleRows[Math.floor(Math.random() * possibleRows.length)];
 
             // Choose a random odd col for the passage
@@ -37,7 +34,6 @@ function recursiveDivisionMaze(rows, cols) {
 
             for (let c = cStart; c <= cEnd; c++) {
                 if (c !== passageCol) {
-                    grid[wallRow][c] = 1;
                     walls.push({ row: wallRow, col: c });
                 }
             }
@@ -47,6 +43,7 @@ function recursiveDivisionMaze(rows, cols) {
             // Choose a random even col for the wall
             let possibleCols = [];
             for (let c = cStart + 1; c < cEnd; c += 2) possibleCols.push(c);
+            if (possibleCols.length === 0) return;
             const wallCol = possibleCols[Math.floor(Math.random() * possibleCols.length)];
 
             // Choose a random odd row for the passage
@@ -56,7 +53,6 @@ function recursiveDivisionMaze(rows, cols) {
 
             for (let r = rStart; r <= rEnd; r++) {
                 if (r !== passageRow) {
-                    grid[r][wallCol] = 1;
                     walls.push({ row: r, col: wallCol });
                 }
             }
@@ -71,7 +67,7 @@ function recursiveDivisionMaze(rows, cols) {
         else return Math.random() < 0.5 ? 'horizontal' : 'vertical';
     }
 
-    divide(0, rows - 1, 0, cols - 1, chooseOrientation(rows - 1, cols - 1));
+    divide(1, rows - 2, 1, cols - 2, chooseOrientation(rows - 2, cols - 2));
     return walls;
 }
 

@@ -2,12 +2,13 @@
 // It handles user interactions, grid rendering, and integrates the selected pathfinding algorithms.
 
 import createMaze from './mazegenerators/recursive.js';
-import recursiveDivisionMaze from './mazegenerators/recursive.js';
 import { bidirectionalDijkstra } from './algorithms/bidirectional.js';
 import { dfs } from './algorithms/dfs.js';
 import { dijkstra } from './algorithms/dijkstra.js';
 import { bfs } from './algorithms/bfs.js';
 import { astar } from './algorithms/astar.js';
+import recursiveDivisionMaze from './mazealgorithms/recursive.js';
+import randomMaze from './mazegenerators/randommaze.js';
 
 
 const grid = document.getElementById('grid');
@@ -18,6 +19,7 @@ const addStartNodeButton = document.getElementById('add-start-node');
 const addEndNodeButton = document.getElementById('add-end-node');
 const speedSelect = document.getElementById('speed');
 const darkModeToggle = document.getElementById('darkModeToggle');
+const generateMazeButton = document.getElementById('generateMaze');
 
 let gridData = [];
 let startNode = null;
@@ -476,64 +478,4 @@ function animateMazeWalls(walls, callback) {
         if (!isRunning) return;
         if (i >= walls.length) {
             isRunning = false;
-            if (callback) callback();
-            return;
-        }
-        const { row, col } = walls[i];
-        if (
-            gridData[row] &&
-            gridData[row][col] !== 'start' &&
-            gridData[row][col] !== 'end'
-        ) {
-            gridData[row][col] = 'wall';
-            renderGrid();
-        }
-        i++;
-        const timeout = setTimeout(next, 10); // Adjust speed here (ms)
-        animationTimeouts.push(timeout);
-    }
-    next();
-}
-
-function generateMaze() {
-    const mazeType = document.getElementById('maze').value;
-
-    if (mazeType === 'recursive') {
-        clearGrid();
-        const rows = gridData.length;
-        const cols = gridData[0].length;
-
-        const walls = recursiveDivisionMaze(rows, cols);
-
-        // Animate wall creation
-        animateMazeWalls(walls);
-    } else if (mazeType === 'random') {
-        // Implement random maze generation
-        // ...existing random maze code if any...
-    } else if (mazeType === 'staircase') {
-        // Implement staircase maze generation
-        // ...existing staircase code if any...
-    }
-}
-
-// Popup handling
-function showNoPathPopup() {
-    document.getElementById('overlay').classList.add('show');
-    document.getElementById('noPathPopup').classList.add('show');
-}
-
-function closePopup() {
-    document.getElementById('overlay').classList.remove('show');
-    document.getElementById('noPathPopup').classList.remove('show');
-}
-
-// Add this to window object to make it accessible from HTML
-window.closePopup = closePopup;
-
-// Close popup when clicking outside of it
-window.addEventListener('click', (event) => {
-    const popup = document.getElementById('noPathPopup');
-    if (event.target === popup) {
-        popup.classList.remove('show');
-    }
-});
+            if
