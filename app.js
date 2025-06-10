@@ -7,7 +7,7 @@ import { dfs } from './algorithms/dfs.js';
 import { dijkstra } from './algorithms/dijkstra.js';
 import { bfs } from './algorithms/bfs.js';
 import { astar } from './algorithms/astar.js';
-import recursiveDivisionMaze from './mazealgorithms/recursive.js';
+import recursiveDivisionMaze from './mazegenerators/recursive.js';
 import randomMaze from './mazegenerators/randommaze.js';
 
 
@@ -478,4 +478,112 @@ function animateMazeWalls(walls, callback) {
         if (!isRunning) return;
         if (i >= walls.length) {
             isRunning = false;
-            if
+            if (callback) callback();
+            return;
+        }
+        const { row, col } = walls[i];
+        if (
+            gridData[row] &&
+            gridData[row][col] !== 'start' &&
+            gridData[row][col] !== 'end'
+        ) {
+            gridData[row][col] = 'wall';
+            renderGrid();
+        }
+        i++;
+        const timeout = setTimeout(next, 10); // Adjust speed here (ms)
+        animationTimeouts.push(timeout);
+    }
+    next();
+}
+
+function generateMaze() {
+    const mazeType = document.getElementById('maze').value;
+
+    if (mazeType === 'recursive') {
+        clearGrid();
+        const rows = gridData.length;
+        const cols = gridData[0].length;
+
+        const walls = recursiveDivisionMaze(rows, cols);
+
+        // Animate wall creation
+        animateMazeWalls(walls);
+    } else if (mazeType === 'random') {
+        // Implement random maze generation
+        // ...existing random maze code if any...
+    } else if (mazeType === 'staircase') {
+        // Implement staircase maze generation
+        // ...existing staircase code if any...
+    }
+}
+
+// Popup handling
+function showNoPathPopup() {
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('noPathPopup').classList.add('show');
+}
+
+function closePopup() {
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('noPathPopup').classList.remove('show');
+}
+
+// Add this to window object to make it accessible from HTML
+window.closePopup = closePopup;
+
+// Close popup when clicking outside of it
+window.addEventListener('click', (event) => {
+    const popup = document.getElementById('noPathPopup');
+    if (event.target === popup) {
+        popup.classList.remove('show');
+    }
+});
+
+// Clear current walls but keep start/end nodes
+if (generateMazeButton) {
+    generateMazeButton.addEventListener('click', () => {
+        // Clear current walls but keep start/end nodes
+        for (let i = 0; i < gridData.length; i++) {
+            for (let j = 0; j < gridData[0].length; j++) {
+                if (gridData[i][j] === 'wall') {
+                    gridData[i][j] = 0;
+                }
+            }
+        }
+        renderGrid();
+
+        const rows = gridData.length;
+        const cols = gridData[0].length;
+        const mazeType = document.getElementById('maze').value;
+        const speed = Number(speedSelect.value);
+
+        let walls = [];
+        if (mazeType === 'recursive') {
+            walls = recursiveDivisionMaze(rows, cols);
+        } else if (mazeType === 'random') {
+            walls = randomMaze(rows, cols, 0.33);
+        } else if (mazeType === 'staircase') {
+            // Simple staircase pattern
+            for (let i = 1; i < Math.min(rows, cols) - 1; i++) {
+                walls.push({ row: i, col: i });
+            }
+        }
+
+        let idx = 0;
+        function animate() {
+            if (idx >= walls.length) return;
+            const { row, col } = walls[idx];
+            if (
+                (!startNode || row !== startNode.row || col !== startNode.col) &&
+                (!endNode || row !== endNode.row || col !== endNode.col)
+            ) {
+                gridData[row][col] = 'wall';
+                renderGrid();
+            }
+            idx++;
+            setTimeout(animate, speed);
+        }
+        animate();
+    });
+}
