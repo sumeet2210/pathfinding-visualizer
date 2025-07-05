@@ -41,7 +41,7 @@ A stunning, interactive web application that brings pathfinding algorithms to li
 ### Installation
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/pathfinding-visualizer.git
+   git clone https://github.com/sumeet2210/pathfinding-visualizer.git
    cd pathfinding-visualizer
    ```
 
@@ -156,4 +156,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ⭐ **Star this repository if you found it helpful!**
 
-🔗 **[Live Demo](https://yourusername.github.io/pathfinding-visualizer)**
+🔗 **[Live Demo](https://sumeet2210.github.io/pathfinding-visualizer)**
