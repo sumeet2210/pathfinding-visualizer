@@ -225,6 +225,7 @@ function visualizePathfinding() {
 
 function animatePathfinding(visitedNodes, shortestPath) {
     isRunning = true;
+    const speed = getAnimationSpeed();
     for (let i = 0; i < visitedNodes.length; i++) {
         const timeout = setTimeout(() => {
             const {row, col} = visitedNodes[i];
@@ -243,12 +244,13 @@ function animatePathfinding(visitedNodes, shortestPath) {
                     animateShortestPath(shortestPath);
                 }
             }
-        }, speedSelect.value * i);
+        }, speed * i);
         animationTimeouts.push(timeout);
     }
 }
 
 function animateShortestPath(path) {
+    const speed = getAnimationSpeed();
     for (let i = 0; i < path.length; i++) {
         const timeout = setTimeout(() => {
             const {row, col} = path[i];
@@ -262,8 +264,18 @@ function animateShortestPath(path) {
             if (i === path.length - 1) {
                 isRunning = false;
             }
-        }, speedSelect.value * i);
+        }, speed * i);
         animationTimeouts.push(timeout);
+    }
+}
+
+function getAnimationSpeed() {
+    const speedValue = speedSelect.value;
+    switch(speedValue) {
+        case 'slow': return 15;
+        case 'medium': return 5;
+        case 'fast': return 1;
+        default: return 5;
     }
 }
 
@@ -310,6 +322,7 @@ createGrid(20, 20); // Example grid size on initialization
 function animateMazeWalls(walls, callback) {
     let i = 0;
     isRunning = true;
+    const speed = getAnimationSpeed();
     function next() {
         if (!isRunning) return;
         if (i >= walls.length) {
@@ -327,7 +340,7 @@ function animateMazeWalls(walls, callback) {
             renderGrid();
         }
         i++;
-        const timeout = setTimeout(next, 10); // Adjust speed here (ms)
+        const timeout = setTimeout(next, speed);
         animationTimeouts.push(timeout);
     }
     next();
@@ -392,7 +405,7 @@ if (generateMazeButton) {
         const rows = gridData.length;
         const cols = gridData[0].length;
         const mazeType = document.getElementById('maze').value;
-        const speed = Number(speedSelect.value);
+        const speed = getAnimationSpeed();
 
         let walls = [];
         if (mazeType === 'recursive') {
@@ -418,7 +431,7 @@ if (generateMazeButton) {
                 renderGrid();
             }
             idx++;
-            setTimeout(animate, speed);
+            setTimeout(animate, getAnimationSpeed());
         }
         animate();
     });
