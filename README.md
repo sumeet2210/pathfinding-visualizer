@@ -144,13 +144,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📸 Screenshots
 
 ### Light Mode
-![Light Mode](./assets/light-mode.png)
+![Light Mode](./assets/light-theme.png)
 
 ### Dark Mode
-![Dark Mode](./assets/dark-mode.png)
+![Dark Mode](./assets/dark-theme.png)
 
 ### Algorithm in Action
-![Algorithm Demo](./assets/algorithm-demo.png)
+![Algorithm Demo](./assets/demo.png)
 
 ---
 
